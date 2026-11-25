@@ -1,7 +1,7 @@
-import 'package:windenergy/features/domain/entities/pairing_code.dart';
-import 'package:windenergy/features/domain/entities/position.dart';
-import 'package:windenergy/features/domain/entities/turbine.dart';
-import 'package:windenergy/utils/result.dart';
+import "package:windenergy/features/domain/entities/pairing_code.dart";
+import "package:windenergy/features/domain/entities/position.dart";
+import "package:windenergy/features/domain/entities/turbine.dart";
+import "package:windenergy/utils/result.dart";
 
 abstract class TurbineRepository {
   FutureResult<int> readCount();

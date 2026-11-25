@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
+import 'package:windenergy/features/data/repositories/session.dart';
 import 'package:windenergy/features/data/repositories/turbine_repository_impl.dart';
 import 'package:windenergy/features/data/services/db_service.dart';
 import 'package:mocktail/mocktail.dart';
@@ -8,186 +10,144 @@ import 'package:windenergy/features/domain/entities/turbine.dart';
 import 'package:windenergy/utils/exceptions.dart';
 import 'package:windenergy/utils/result.dart';
 
-class MockDbService extends Mock implements DbService {}
+class MockDbService extends Mock implements DbService{}
 
-void main() {
+void main(){
   late MockDbService mockDbService;
   late TurbineRepositoryImpl turbineRepositoryImpl;
 
-  setUp(() {
+  setUp((){
     mockDbService = MockDbService();
     turbineRepositoryImpl = TurbineRepositoryImpl(dbService: mockDbService);
+    if(!GetIt.instance.isRegistered<Session>()){
+      GetIt.instance.registerSingleton<Session>(Session(userId: "0"));
+    }
   });
 
-  group("createTurbine", () {
-    test("should return Success", () async {
-      final serialNumber = "12345";
-      final customName = "test";
-      final position = const Position(latitude: 30.5, longitude: 1.5);
-      when(() => mockDbService.createTurbine(
-        serialNumber: serialNumber,
-        customName: customName,
-        latitude: position.latitude,
-        longitude: position.longitude,
-      )).thenAnswer((_) async => Success<int>());
-      final result = await turbineRepositoryImpl.createTurbine(
-          serialNumber: serialNumber,
-          customName: customName,
-          position: position);
-      expect(result, Success<int>());
+  group("createTurbine",(){
+    test("should return Success", () async{
+      final serialNumber = "test_serial";
+      final customName = "custom_name";
+      final position = Position();
+      when(()=>mockDbService.createTurbine(userId:"0", serialNumber: serialNumber, customName: customName, position: position)).thenAnswer((_)async => Success<int>(value: 0));
+      final result = await turbineRepositoryImpl.createTurbine(serialNumber: serialNumber, customName: customName, position: position);
+      expect(result, Success<int>(value:0));
     });
 
-    test("Should return Error", () async {
-      final serialNumber = "12345";
-      final customName = "test";
-      final position = const Position(latitude: 30.5, longitude: 1.5);
-      when(() => mockDbService.createTurbine(
-        serialNumber: serialNumber,
-        customName: customName,
-        latitude: position.latitude,
-        longitude: position.longitude,
-      )).thenThrow(ServerException());
-      final result = await turbineRepositoryImpl.createTurbine(
-          serialNumber: serialNumber,
-          customName: customName,
-          position: position);
+    test("should return Error", () async{
+      final serialNumber = "test_serial";
+      final customName = "custom_name";
+      final position = Position();
+      when(()=>mockDbService.createTurbine(userId:"0", serialNumber: serialNumber, customName: customName, position: position)).thenThrow(ServerException());
+      final result = await turbineRepositoryImpl.createTurbine(serialNumber: serialNumber, customName: customName, position: position);
       expect(result, Error<int>());
     });
   });
 
-  group("DeleteTurbine", () {
-    test("should return Success", () async {
-      final turbineId = 1;
-      when(() => mockDbService.deleteTurbine(turbineId: turbineId))
-          .thenAnswer((_) async => Success());
-      final result =
-      await turbineRepositoryImpl.deleteTurbine(turbineId: turbineId);
+  group("deleteTurbine",(){
+    test("should return Success", () async{
+      final turbineId = 0;
+      when(()=>mockDbService.deleteTurbine(turbineId: turbineId)).thenAnswer((_)async => Success());
+      final result = await turbineRepositoryImpl.deleteTurbine(turbineId: turbineId);
       expect(result, Success());
     });
 
-    test("Should return Error", () async {
-      final turbineId = 1;
-      when(() => mockDbService.deleteTurbine(turbineId: turbineId))
-          .thenThrow(ServerException());
-      final result =
-      await turbineRepositoryImpl.deleteTurbine(turbineId: turbineId);
+    test("should return Error", () async{
+      final turbineId = 0;
+      when(()=>mockDbService.deleteTurbine(turbineId: turbineId)).thenThrow(ServerException());
+      final result = await turbineRepositoryImpl.deleteTurbine(turbineId: turbineId);
       expect(result, Error());
     });
   });
 
-  group("ReadCount", () {
-    test("should return Success", () async {
-      when(() => mockDbService.readCount())
-          .thenAnswer((_) async => Success<int>());
+  group("readCount",(){
+    test("should return Success", () async{
+      when(()=>mockDbService.readCount(userId: "0")).thenAnswer((_)async => Success<int>(value: 0));
       final result = await turbineRepositoryImpl.readCount();
-      expect(result, Success<int>());
+      expect(result, Success<int>(value: 0));
     });
 
-    test("Should return Error", () async {
-      when(() => mockDbService.readCount()).thenThrow(ServerException());
+    test("should return Error", () async{
+      when(()=>mockDbService.readCount(userId: "0")).thenThrow(ServerException());
       final result = await turbineRepositoryImpl.readCount();
       expect(result, Error<int>());
     });
   });
 
-  group("ReadPairingCode", () {
-    test("should return Success", () async {
-      final turbineId = 1;
-      when(() => mockDbService.readPairingCode(turbineId: turbineId))
-          .thenAnswer((_) async => Success<PairingCode>());
-      final result =
-      await turbineRepositoryImpl.readPairingCode(turbineId: turbineId);
+  group("readPairingCode",(){
+    test("should return Success", () async{
+      final turbineId = 0;
+      when(()=>mockDbService.readPairingCode(turbineId: turbineId)).thenAnswer((_)async => Success<PairingCode>());
+      final result = await turbineRepositoryImpl.readPairingCode(turbineId: turbineId);
       expect(result, Success<PairingCode>());
     });
 
-    test("Should return Error", () async {
-      final turbineId = 1;
-      when(() => mockDbService.readPairingCode(turbineId: turbineId))
-          .thenThrow(ServerException());
-      final result =
-      await turbineRepositoryImpl.readPairingCode(turbineId: turbineId);
+    test("should return Error", () async{
+      final turbineId = 0;
+      when(()=>mockDbService.readPairingCode(turbineId: turbineId)).thenThrow(ServerException());
+      final result = await turbineRepositoryImpl.readPairingCode(turbineId: turbineId);
       expect(result, Error<PairingCode>());
     });
   });
 
-  group("ReadTotalPowerW", () {
-    test("should return Success", () async {
-      when(() => mockDbService.readTotalPowerW())
-          .thenAnswer((_) async => Success<double>());
+  group("readTotalPowerW",(){
+    test("should return Success", () async{
+      when(()=>mockDbService.readTotalPowerW(userId: "0")).thenAnswer((_)async => Success<double>());
       final result = await turbineRepositoryImpl.readTotalPowerW();
       expect(result, Success<double>());
     });
 
-    test("Should return Error", () async {
-      when(() => mockDbService.readTotalPowerW()).thenThrow(ServerException());
+    test("should return Error", () async{
+      when(()=>mockDbService.readTotalPowerW(userId: "0")).thenThrow(ServerException());
       final result = await turbineRepositoryImpl.readTotalPowerW();
       expect(result, Error<double>());
     });
   });
 
-  group("ReadTurbineActivation", () {
-    test("should return Success", () async {
-      when(() => mockDbService.readTurbineActivation())
-          .thenAnswer((_) async => Success());
+  group("readTurbineActivation",(){
+    test("should return Success", () async{
+      when(()=>mockDbService.readTurbineActivation()).thenAnswer((_)async => Success());
       final result = await turbineRepositoryImpl.readTurbineActivation();
       expect(result, Success());
     });
 
-    test("Should return Error", () async {
-      when(() => mockDbService.readTurbineActivation())
-          .thenThrow(ServerException());
+    test("should return Error", () async{
+      when(()=>mockDbService.readTurbineActivation()).thenThrow(ServerException());
       final result = await turbineRepositoryImpl.readTurbineActivation();
       expect(result, Error());
     });
   });
 
-  group("ReadTurbines", () {
-    test("should return Success", () async {
-      when(() => mockDbService.readTurbines())
-          .thenAnswer((_) async => Success<List<Turbine>>());
+  group("readTurbines",(){
+    test("should return Success", () async{
+      when(()=>mockDbService.readTurbines(userId: "0")).thenAnswer((_)async => Success<List<Turbine>>());
       final result = await turbineRepositoryImpl.readTurbines();
       expect(result, Success<List<Turbine>>());
     });
 
-    test("Should return Error", () async {
-      when(() => mockDbService.readTurbines()).thenThrow(ServerException());
+    test("should return Error", () async{
+      when(()=>mockDbService.readTurbines(userId: "0")).thenThrow(ServerException());
       final result = await turbineRepositoryImpl.readTurbines();
       expect(result, Error<List<Turbine>>());
     });
   });
 
-  group("UpdateTurbine", () {
-    test("should return Success", () async {
-      final turbineId = 1;
-      final customName = "test";
-      final position = const Position(latitude: 30.5, longitude: 1.5);
-      when(() => mockDbService.updateTurbine(
-        turbineId: turbineId,
-        customName: customName,
-        latitude: position.latitude,
-        longitude: position.longitude,
-      )).thenAnswer((_) async => Success());
-      final result = await turbineRepositoryImpl.updateTurbine(
-          turbineId: turbineId,
-          customName: customName,
-          position: position);
-      expect(result, Success());
+  group("updateTurbine",(){
+    test("should return Success", () async{
+      final turbineId = 0;
+      final customName = "";
+      final position = Position();
+      when(()=>mockDbService.updateTurbine(turbineId: turbineId, customName: customName, position: position)).thenAnswer((_)async => Success<List<Turbine>>());
+      final result = await turbineRepositoryImpl.updateTurbine(turbineId: turbineId, customName: customName, position: position);
+      expect(result, Success<List<Turbine>>());
     });
 
-    test("Should return Error", () async {
-      final turbineId = 1;
-      final customName = "test";
-      final position = const Position(latitude: 30.5, longitude: 1.5);
-      when(() => mockDbService.updateTurbine(
-        turbineId: turbineId,
-        customName: customName,
-        latitude: position.latitude,
-        longitude: position.longitude,
-      )).thenThrow(ServerException());
-      final result = await turbineRepositoryImpl.updateTurbine(
-          turbineId: turbineId,
-          customName: customName,
-          position: position);
+    test("should return Error", () async{
+      final turbineId = 0;
+      final customName = "";
+      final position = Position();
+      when(()=>mockDbService.updateTurbine(turbineId: turbineId, customName: customName, position: position)).thenThrow(ServerException());
+      final result = await turbineRepositoryImpl.updateTurbine(turbineId: turbineId, customName: customName, position: position);
       expect(result, Error());
     });
   });
