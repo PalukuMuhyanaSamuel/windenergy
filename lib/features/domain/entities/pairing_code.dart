@@ -3,7 +3,6 @@ import "package:equatable/equatable.dart";
 enum ParingStatus{valid, invalid}
 
 class PairingCode extends Equatable{
-  final String userId;
   final int turbineId;
   final String codeHash;
   final ParingStatus status;
@@ -12,7 +11,6 @@ class PairingCode extends Equatable{
   final DateTime? validatedAt;
 
   const PairingCode({
-    this.userId="",
     this.turbineId=0,
     this.codeHash="",
     this.status = ParingStatus.invalid,
@@ -23,5 +21,5 @@ class PairingCode extends Equatable{
 });
 
   @override
-  List<Object?> get props => [userId, turbineId, codeHash, createdAd];
+  List<Object?> get props => [turbineId, codeHash, createdAd];
 }
