@@ -42,6 +42,9 @@ dependencies:
   mock_supabase_http_client: ^0.1.0
   dotenv: ^4.2.0
   http: ^1.6.0
+  firebase_core: ^5.1.0
+  cloud_firestore: ^7.1.0
+  firebase_auth: ^7.0.1
 
 dev_dependencies:
   flutter_test:
